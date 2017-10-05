@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour {
 
+    [Header("Attribute")]
     public float range = 15f;
+
+    [Header("Attribute")]
+    public Transform partToRotate;
 
     public const string enemyTag = "Enemy";
 
     GameObject target;
+
 
 	void Start () {
 		
@@ -46,10 +51,17 @@ public class Turret : MonoBehaviour {
 
     }
 
-    //被选取时显示范围
-    private void OnDrawGizmosSelected()
+    #region 用Collider获取可攻击目标列表
+    List<GameObject> targetList;
+
+    private void OnTriggerEnter(Collider other)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
+        targetList.Add(other.gameObject);
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        targetList.Remove(other.gameObject);
+    }
+#endregion
 }
