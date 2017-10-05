@@ -4,13 +4,29 @@ using UnityEngine;
 
 public class Node : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+    public Color hoverColor;
+
+    private Renderer renderer;
+    private Color startColor;
+
+    void Start ()
+    {
+        renderer = GetComponent<Renderer>();
+        startColor = renderer.material.color;
 	}
 	
-	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    private void OnMouseEnter()
+    {
+        renderer.material.color = hoverColor;
+    }
+
+    private void OnMouseExit()
+    {
+        renderer.material.color = startColor;
+
+    }
 }
