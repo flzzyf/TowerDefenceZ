@@ -751,6 +751,7 @@ GameObject:
   - component: {fileID: 106282371}
   - component: {fileID: 106282370}
   - component: {fileID: 106282369}
+  - component: {fileID: 106282374}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -804,12 +805,12 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -821,13 +822,25 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 106282368}
-  m_LocalRotation: {x: 0, y: 0.8660254, z: -0.5, w: 0}
-  m_LocalPosition: {x: -62, y: 67, z: 72}
+  m_LocalRotation: {x: 0.105499014, y: -0.54030854, z: 0.06851448, w: 0.83201104}
+  m_LocalPosition: {x: 193.39685, y: -2.6304703, z: 90.81344}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 60, y: 180, z: 0}
+--- !u!114 &106282374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 106282368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 031a33e3ab406ac4aa17ab85f6ba6da7, type: 2}
 --- !u!1 &111565243
 GameObject:
   m_ObjectHideFlags: 0
@@ -2749,7 +2762,7 @@ Terrain:
   m_HeightmapMaximumLOD: 0
   m_CastShadows: 1
   m_DrawHeightmap: 1
-  m_DrawTreesAndFoliage: 1
+  m_DrawTreesAndFoliage: 0
   m_ReflectionProbeUsage: 1
   m_MaterialType: 0
   m_LegacySpecular:
