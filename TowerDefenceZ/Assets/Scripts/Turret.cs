@@ -15,6 +15,8 @@ public class Turret : MonoBehaviour {
 
     GameObject target;
 
+    Turret_Weapon weapon;
+
     #region 用Collider获取可攻击目标列表
     List<GameObject> targetList = new List<GameObject>();
 
@@ -30,20 +32,30 @@ public class Turret : MonoBehaviour {
     }
     #endregion
 
-    void Start () {
-		
+    void Start ()
+    {
+        weapon = GetComponent<Turret_Weapon>();
 	}
 	
 	void Update ()
     {
-        if(targetList.Count > 0)
+        //没有目标或者目标在范围外
+        if(target == null || !targetList.Contains(target))
         {
-            UpdateTarget();
-        }
+            if(targetList.Count > 0)
+            {
+                //重新搜索目标
+                UpdateTarget();
+            }
 
-		if(target != null)
+        }
+        else
         {
+            //有可攻击目标
             FaceTarget(partToRotate, target.transform.position);
+
+            weapon.Fire(target.transform.position);
+            target.GetComponent<Unit>().TakeDamage(5f * Time.deltaTime);
         }
 	}
 
@@ -53,14 +65,26 @@ public class Turret : MonoBehaviour {
         float shortestDistance = Mathf.Infinity;
         GameObject nerestEnemy = null;
 
-        foreach (GameObject enemy in targetList)
+        //去除无效目标
+        for (int i = 0; i < targetList.Count; i++)
         {
-            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            if(targetList[i] == null)
+            {
+                targetList.Remove(targetList[i]);
+
+            }
+        }
+
+        //选出目标组中最近的一个
+        foreach (GameObject target in targetList)
+        {
+
+            float distance = Vector3.Distance(transform.position, target.transform.position);
 
             if (distance < shortestDistance)
             {
                 shortestDistance = distance;
-                nerestEnemy = enemy;
+                nerestEnemy = target;
             }
         }
 
