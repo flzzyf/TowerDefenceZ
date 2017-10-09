@@ -6,19 +6,19 @@ public class Node : MonoBehaviour {
 
     public Color hoverColor;
 
-    private Renderer renderer;
-    private Color startColor;
+    [SerializeField]
+    Transform placeToBuild;
+
+    Renderer renderer;
+    Color startColor;
 
     void Start ()
     {
         renderer = GetComponent<Renderer>();
         startColor = renderer.material.color;
 	}
-	
-	void Update () {
-		
-	}
 
+#region 鼠标悬浮时变色
     private void OnMouseEnter()
     {
         renderer.material.color = hoverColor;
@@ -28,5 +28,13 @@ public class Node : MonoBehaviour {
     {
         renderer.material.color = startColor;
 
+    }
+    #endregion
+
+    private void OnMouseDown()
+    {
+        //Debug.Log("Click");
+        GameObject turretPrefab = BuildManager.instance.GetTurretToBuild();
+        Instantiate(turretPrefab, placeToBuild.position, placeToBuild.rotation);
     }
 }

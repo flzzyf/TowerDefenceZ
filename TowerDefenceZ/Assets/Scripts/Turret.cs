@@ -15,8 +15,6 @@ public class Turret : MonoBehaviour {
 
     GameObject target;
 
-    Turret_Weapon weapon;
-
     #region 用Collider获取可攻击目标列表
     List<GameObject> targetList = new List<GameObject>();
 
@@ -34,7 +32,7 @@ public class Turret : MonoBehaviour {
 
     void Start ()
     {
-        weapon = GetComponent<Turret_Weapon>();
+
 	}
 	
 	void Update ()
@@ -42,7 +40,18 @@ public class Turret : MonoBehaviour {
         //没有目标或者目标在范围外
         if(target == null || !targetList.Contains(target))
         {
-            if(targetList.Count > 0)
+
+            //从目标列中去除无效目标
+            for (int i = 0; i < targetList.Count; i++)
+            {
+                if (targetList[i] == null)
+                {
+                    targetList.Remove(targetList[i]);
+
+                }
+            }
+
+            if (targetList.Count > 0)
             {
                 //重新搜索目标
                 UpdateTarget();
@@ -54,8 +63,6 @@ public class Turret : MonoBehaviour {
             //有可攻击目标
             FaceTarget(partToRotate, target.transform.position);
 
-            weapon.Fire(target.transform.position);
-            target.GetComponent<Unit>().TakeDamage(5f * Time.deltaTime);
         }
 	}
 
@@ -64,16 +71,6 @@ public class Turret : MonoBehaviour {
         //从目标组获取最近目标
         float shortestDistance = Mathf.Infinity;
         GameObject nerestEnemy = null;
-
-        //去除无效目标
-        for (int i = 0; i < targetList.Count; i++)
-        {
-            if(targetList[i] == null)
-            {
-                targetList.Remove(targetList[i]);
-
-            }
-        }
 
         //选出目标组中最近的一个
         foreach (GameObject target in targetList)
@@ -99,5 +96,10 @@ public class Turret : MonoBehaviour {
         Quaternion lookRotation = Quaternion.LookRotation(dir);
         Vector3 rotation = Quaternion.Lerp(_partToRotate.rotation, lookRotation, Time.deltaTime * rotSpeed).eulerAngles;
         _partToRotate.rotation = Quaternion.Euler(0f, rotation.y, 0f);
+    }
+
+    public GameObject ReturnTarget()
+    {
+        return target;
     }
 }

@@ -4,21 +4,66 @@ using UnityEngine;
 
 public class Turret_Weapon : MonoBehaviour {
 
+    public float damage = 5f;
+    public float fireRate = 4f;
+    float currentCountdown = 0;
+
     public Transform firePoint;
 
     public GameObject launchEffect;
+    public GameObject impactEffect;
 
-	void Start () {
-		
+    Turret turret;
+    GameObject target;
+
+    AudioSource audioSource;
+
+    void Start ()
+    {
+        turret = GetComponent<Turret>();
+
+        audioSource = GetComponent<AudioSource>();
 	}
 	
-	void Update () {
-		
-	}
+	void Update ()
+    {
+        if(currentCountdown > 0)
+        {
+            currentCountdown -= Time.deltaTime;
+        }
+
+        target = turret.ReturnTarget();
+
+        if (target != null)
+        {
+            if(currentCountdown <= 0)
+            {
+                //冷却为0可开火
+                currentCountdown = 1 / fireRate;
+                Fire(target.transform.position);
+                target.GetComponent<Unit>().TakeDamage(damage);
+
+            }
+        }
+    }
 
     public void Fire(Vector3 _targetPoint)
     {
         GameObject particle = Instantiate(launchEffect, firePoint.position, firePoint.rotation);
         Destroy(particle, particle.GetComponent<ParticleSystem>().main.duration);
+
+        audioSource.Play();
+
+        RaycastHit hit;
+
+        if(Physics.Raycast(firePoint.position, _targetPoint - firePoint.position, out hit, 500))
+        {
+            Debug.DrawLine(firePoint.position, hit.point);
+
+            particle = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            Destroy(particle, particle.GetComponent<ParticleSystem>().main.duration);
+
+        }
+
     }
 }
