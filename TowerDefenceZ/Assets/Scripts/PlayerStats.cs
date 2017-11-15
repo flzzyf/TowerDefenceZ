@@ -26,7 +26,7 @@ public class PlayerStats : MonoBehaviour {
 
     private void Update()
     {
-        Debug.Log(Vector3.Angle(asd.transform.position, qwe.transform.position));
+        //Debug.Log(Vector3.Angle(asd.transform.position, qwe.transform.position));
 
     }
 

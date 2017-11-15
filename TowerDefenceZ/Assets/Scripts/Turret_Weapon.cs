@@ -36,14 +36,19 @@ public class Turret_Weapon : MonoBehaviour {
 
         if (target != null)
         {
-            if(currentCountdown <= 0)
+            if (currentCountdown <= 0)
             {
                 //冷却为0可开火
-                currentCountdown = 1 / fireRate;
-                Fire(target.transform.position);
 
+                if (TargetIsForward(target.transform.position))
+                {
+                    currentCountdown = 1 / fireRate;
+                    Fire(target.transform.position);
+                }
             }
         }
+
+
     }
 
     public void Fire(Vector3 _targetPoint)
@@ -59,7 +64,8 @@ public class Turret_Weapon : MonoBehaviour {
         {
             Debug.DrawLine(firePoint.position, hit.point);
 
-            Debug.Log(hit.transform.gameObject.name);
+            //Debug.Log(gameObject.name);
+            //Debug.Log(hit.transform.gameObject.name);
 
             particle = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(particle, particle.GetComponent<ParticleSystem>().main.duration);
@@ -70,9 +76,20 @@ public class Turret_Weapon : MonoBehaviour {
 
             }
 
-
-
         }
 
+    }
+
+    bool TargetIsForward(Vector3 _target)
+    {
+        Vector3 dir = _target - turret.partToRotate.position;
+
+        float angle = Vector3.Angle(dir, turret.partToRotate.forward);
+
+        if(angle < 30)
+        {
+            return true;
+        }
+        return false;
     }
 }

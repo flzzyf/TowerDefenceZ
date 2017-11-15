@@ -21,6 +21,7 @@ public class Node : MonoBehaviour {
 #region 鼠标悬浮时变色
     private void OnMouseEnter()
     {
+        Debug.Log("qwe");
         renderer.material.color = hoverColor;
     }
 
