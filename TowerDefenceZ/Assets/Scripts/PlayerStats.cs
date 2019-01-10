@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerStats : MonoBehaviour {
 
@@ -13,15 +14,14 @@ public class PlayerStats : MonoBehaviour {
 
     public static int rounds = 0;
 
-    public GameObject qwe;
-    public GameObject asd;
+    public TextMeshProUGUI text;
 
     void Start ()
     {
         money = startMoney;
         lives = startLives;
 
-
+        text.text = money.ToString();
     }
 
     private void Update()
