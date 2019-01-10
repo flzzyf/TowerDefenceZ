@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : MonoBehaviour {
-
-    [Header("Attribute")]
-    [Header("范围为Collider的Radius")]
+public class Turret : MonoBehaviour
+{
     public float rotSpeed = 10;
 
     [Header("Setup")]
@@ -15,54 +13,33 @@ public class Turret : MonoBehaviour {
 
     GameObject target;
 
-    #region 用Collider获取可攻击目标列表
-    List<GameObject> targetList = new List<GameObject>();
+    public Animator animator;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        targetList.Add(other.gameObject);
+    public float range = 40;
 
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        targetList.Remove(other.gameObject);
-    }
-    #endregion
+    Turret_Weapon weapon;
 
     void Start ()
     {
+        weapon = GetComponent<Turret_Weapon>();
 
+        //解除隐藏
+        animator.SetBool("hidden", false);
 	}
 	
 	void Update ()
     {
-        //没有目标或者目标在范围外
-        if(target == null || !targetList.Contains(target))
+        //没有目标或者在范围外，搜索目标
+        if(target == null || Vector3.Distance(transform.position, target.transform.position) > range)
         {
-
-            //从目标列中去除无效目标
-            for (int i = 0; i < targetList.Count; i++)
-            {
-                if (targetList[i] == null)
-                {
-                    targetList.Remove(targetList[i]);
-
-                }
-            }
-
-            if (targetList.Count > 0)
-            {
-                //重新搜索目标
-                UpdateTarget();
-            }
-
+            UpdateTarget();
         }
         else
         {
-            //有可攻击目标
+            //没有朝向目标则转动，否则攻击
             FaceTarget(partToRotate, target.transform.position);
 
+            weapon.Attack(target);
         }
 	}
 
@@ -72,21 +49,23 @@ public class Turret : MonoBehaviour {
         float shortestDistance = Mathf.Infinity;
         GameObject nerestEnemy = null;
 
-        //选出目标组中最近的一个
-        foreach (GameObject target in targetList)
+        float distance;
+        foreach (var item in Physics.OverlapSphere(transform.position, range))
         {
+            //过滤非敌人单位
+            if (item.gameObject.tag != "Unit")
+                continue;
 
-            float distance = Vector3.Distance(transform.position, target.transform.position);
+            distance = Vector3.Distance(transform.position, item.transform.position);
 
             if (distance < shortestDistance)
             {
                 shortestDistance = distance;
-                nerestEnemy = target;
+                nerestEnemy = item.gameObject;
             }
         }
 
         target = nerestEnemy;
-
     }
 
     //面向目标方向
@@ -98,8 +77,8 @@ public class Turret : MonoBehaviour {
         _partToRotate.rotation = Quaternion.Euler(0f, rotation.y, 0f);
     }
 
-    public GameObject ReturnTarget()
+    private void OnDrawGizmos()
     {
-        return target;
+        Gizmos.DrawWireSphere(transform.position, range);
     }
 }

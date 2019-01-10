@@ -16,6 +16,8 @@ public class CameraControl : MonoBehaviour
 
     void Update()
     {
+        //if(Input.mousePosition)
+
         //WASD或鼠标靠近边缘移动镜头
         Vector3 pos = transform.position;
 

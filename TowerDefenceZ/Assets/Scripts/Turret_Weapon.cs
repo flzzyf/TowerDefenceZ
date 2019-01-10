@@ -13,10 +13,12 @@ public class Turret_Weapon : MonoBehaviour {
     public GameObject launchEffect;
     public GameObject impactEffect;
 
-    Turret turret;
-    GameObject target;
+    public float range = 30;
 
+    Turret turret;
     AudioSource audioSource;
+
+    public TrailRenderer prefab_trail;
 
     void Start ()
     {
@@ -31,24 +33,19 @@ public class Turret_Weapon : MonoBehaviour {
         {
             currentCountdown -= Time.deltaTime;
         }
+    }
 
-        target = turret.ReturnTarget();
-
-        if (target != null)
+    public void Attack(GameObject _target)
+    {
+        //冷却为0可开火
+        if (currentCountdown <= 0)
         {
-            if (currentCountdown <= 0)
+            if (Vector3.Distance(transform.position, _target.transform.position) <= range && TargetIsForward(_target.transform.position))
             {
-                //冷却为0可开火
-
-                if (TargetIsForward(target.transform.position))
-                {
-                    currentCountdown = 1 / fireRate;
-                    Fire(target.transform.position);
-                }
+                currentCountdown = 1 / fireRate;
+                Fire(_target.transform.position);
             }
         }
-
-
     }
 
     public void Fire(Vector3 _targetPoint)
@@ -60,12 +57,12 @@ public class Turret_Weapon : MonoBehaviour {
 
         RaycastHit hit;
 
-        if(Physics.Raycast(firePoint.position, _targetPoint - firePoint.position, out hit, 500))
+        Vector3 random = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+        if(Physics.Raycast(firePoint.position, _targetPoint - firePoint.position + random, out hit, 100))
         {
             Debug.DrawLine(firePoint.position, hit.point);
 
-            //Debug.Log(gameObject.name);
-            //Debug.Log(hit.transform.gameObject.name);
+            StartCoroutine(LaunchTrail(hit.point));
 
             particle = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(particle, particle.GetComponent<ParticleSystem>().main.duration);
@@ -73,11 +70,20 @@ public class Turret_Weapon : MonoBehaviour {
             if(hit.transform.tag == "Unit")
             {
                 hit.transform.gameObject.GetComponent<Unit>().TakeDamage(damage);
-
             }
 
         }
+    }
 
+    IEnumerator LaunchTrail(Vector3 _target)
+    {
+        float random = Random.Range(1, 2f);
+        TrailRenderer trail = Instantiate(prefab_trail, new Ray(firePoint.position, _target - firePoint.position).GetPoint(random), Quaternion.identity);
+
+        yield return null;
+        trail.transform.Translate(_target - firePoint.position);
+
+        Destroy(trail, trail.time);
     }
 
     bool TargetIsForward(Vector3 _target)
