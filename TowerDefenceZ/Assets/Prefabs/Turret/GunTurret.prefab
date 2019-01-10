@@ -100,7 +100,7 @@ MonoBehaviour:
     type: 3}
   impactEffect: {fileID: 1052409457463192, guid: ebd1accfa67e5a7429127ae325413a45,
     type: 3}
-  range: 30
+  range: 33
   prefab_trail: {fileID: 7128273627957351376, guid: 3f4af128eb3d42e48aebfe84823f25fc,
     type: 3}
 --- !u!82 &82358799176845392
